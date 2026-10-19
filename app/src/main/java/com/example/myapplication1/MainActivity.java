@@ -1,71 +1,81 @@
 package com.example.myapplication1;
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Locale;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText heightInput;
-    private EditText weightInput;
-    private TextView resultText;
-    private TextView adviceText;
+    private static final String STATE_TEAM_A = "score_team_a";
+    private static final String STATE_TEAM_B = "score_team_b";
+    private int scoreA;
+    private int scoreB;
+    private TextView scoreAView;
+    private TextView scoreBView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
+        WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(true);
+        WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightNavigationBars(true);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (view, insets) -> {
+            Insets bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(findViewById(R.id.main));
 
-        heightInput = findViewById(R.id.height_input);
-        weightInput = findViewById(R.id.weight_input);
-        resultText = findViewById(R.id.result_text);
-        adviceText = findViewById(R.id.advice_text);
-
-        Button calculateButton = findViewById(R.id.calculate_button);
-        calculateButton.setOnClickListener(v -> calculateBmi());
-    }
-
-    private void calculateBmi() {
-        String heightText = heightInput.getText().toString().trim();
-        String weightText = weightInput.getText().toString().trim();
-
-        try {
-            double height = Double.parseDouble(heightText);
-            double weight = Double.parseDouble(weightText);
-
-            if (height <= 0 || weight <= 0) {
-                showInputError();
-                return;
-            }
-
-            double heightInMeters = height / 100;
-            double bmi = weight / (heightInMeters * heightInMeters);
-            String bmiValue = String.format(Locale.CHINA, "%.2f", bmi);
-            resultText.setText(getString(R.string.bmi_result, bmiValue));
-            adviceText.setText(getString(R.string.health_advice, getAdvice(bmi)));
-        } catch (NumberFormatException e) {
-            showInputError();
+        scoreAView = findViewById(R.id.score_a);
+        scoreBView = findViewById(R.id.score_b);
+        if (savedInstanceState != null) {
+            scoreA = savedInstanceState.getInt(STATE_TEAM_A, 0);
+            scoreB = savedInstanceState.getInt(STATE_TEAM_B, 0);
         }
+        showScores();
+
+        findViewById(R.id.add_three_a).setOnClickListener(view -> addPoints(true, 3));
+        findViewById(R.id.add_two_a).setOnClickListener(view -> addPoints(true, 2));
+        findViewById(R.id.free_throw_a).setOnClickListener(view -> addPoints(true, 1));
+        findViewById(R.id.add_three_b).setOnClickListener(view -> addPoints(false, 3));
+        findViewById(R.id.add_two_b).setOnClickListener(view -> addPoints(false, 2));
+        findViewById(R.id.free_throw_b).setOnClickListener(view -> addPoints(false, 1));
+        findViewById(R.id.reset_button).setOnClickListener(view -> {
+            scoreA = 0;
+            scoreB = 0;
+            showScores();
+        });
     }
 
-    private String getAdvice(double bmi) {
-        if (bmi < 18.5) {
-            return getString(R.string.advice_underweight);
-        } else if (bmi < 24) {
-            return getString(R.string.advice_normal);
-        } else if (bmi < 28) {
-            return getString(R.string.advice_overweight);
-        } else {
-            return getString(R.string.advice_obese);
+    private void addPoints(boolean teamA, int points) {
+        if (teamA && scoreA <= Integer.MAX_VALUE - points) {
+            scoreA += points;
+        } else if (!teamA && scoreB <= Integer.MAX_VALUE - points) {
+            scoreB += points;
         }
+        showScores();
     }
 
-    private void showInputError() {
-        resultText.setText(R.string.invalid_bmi_input);
-        adviceText.setText(R.string.health_advice_default);
+    private void showScores() {
+        scoreAView.setText(String.valueOf(scoreA));
+        scoreBView.setText(String.valueOf(scoreB));
+        scoreAView.setContentDescription(getString(R.string.team_score, getString(R.string.team_a), scoreA));
+        scoreBView.setContentDescription(getString(R.string.team_score, getString(R.string.team_b), scoreB));
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(STATE_TEAM_A, scoreA);
+        outState.putInt(STATE_TEAM_B, scoreB);
+        super.onSaveInstanceState(outState);
     }
 }

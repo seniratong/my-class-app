@@ -7,4 +7,9 @@
     <color name="mid_autumn_muted">#B9C8E3</color>
     <color name="mid_autumn_accent">#FFB56B</color>
     <color name="mid_autumn_frame">#FFF0C8</color>
+    <color name="court_background">#FFFFFF</color>
+    <color name="court_primary">#2854C5</color>
+    <color name="court_text">#182237</color>
+    <color name="court_muted">#5B6473</color>
+    <color name="court_divider">#DFE4EC</color>
 </resources>

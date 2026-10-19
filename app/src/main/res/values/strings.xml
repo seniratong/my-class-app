@@ -1,16 +1,12 @@
 <resources>
-    <string name="app_name">BMI计算器</string>
-    <string name="bmi_title">身体质量指数 BMI</string>
-    <string name="height_hint">请输入身高（厘米）</string>
-    <string name="weight_hint">请输入体重（千克）</string>
-    <string name="calculate_bmi">计算 BMI</string>
-    <string name="bmi_result_default">BMI 结果：</string>
-    <string name="health_advice_default">健康建议：</string>
-    <string name="bmi_result">BMI 结果：%1$s</string>
-    <string name="health_advice">健康建议：%1$s</string>
-    <string name="invalid_bmi_input">请输入有效的身高和体重</string>
-    <string name="advice_underweight">偏瘦，建议合理增加营养并保持适量运动。</string>
-    <string name="advice_normal">正常，请继续保持健康的饮食和运动习惯。</string>
-    <string name="advice_overweight">超重，建议控制饮食并增加运动。</string>
-    <string name="advice_obese">肥胖，建议规律运动并咨询专业人士制定健康计划。</string>
+    <string name="app_name">双队计分器</string>
+    <string name="court_title">双队计分器</string>
+    <string name="team_a">Team A</string>
+    <string name="team_b">Team B</string>
+    <string name="score_zero">0</string>
+    <string name="add_three_points">+3 POINTS</string>
+    <string name="add_two_points">+2 POINTS</string>
+    <string name="free_throw">FREE THROW</string>
+    <string name="reset_scores">RESET</string>
+    <string name="team_score">%1$s：%2$d 分</string>
 </resources>
