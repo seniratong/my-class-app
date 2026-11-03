@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rate_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:background="@android:color/white">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/rate_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:title="@string/rate_edit_title"
+        app:titleTextColor="#182237" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="@string/rate_edit_note"
+                android:textColor="#5B6473"
+                android:textSize="16sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/edit_dollar_rate"
+                android:text="@string/rate_dollar_label"
+                android:textColor="#182237"
+                android:textSize="18sp" />
+            <EditText
+                android:id="@+id/edit_dollar_rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:minHeight="56dp"
+                android:hint="@string/rate_input_hint"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textSize="22sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/edit_euro_rate"
+                android:text="@string/rate_euro_label"
+                android:textColor="#182237"
+                android:textSize="18sp" />
+            <EditText
+                android:id="@+id/edit_euro_rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:minHeight="56dp"
+                android:hint="@string/rate_input_hint"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textSize="22sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/edit_won_rate"
+                android:text="@string/rate_won_label"
+                android:textColor="#182237"
+                android:textSize="18sp" />
+            <EditText
+                android:id="@+id/edit_won_rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:minHeight="56dp"
+                android:hint="@string/rate_input_hint"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textSize="22sp" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/save_rates"
+                style="@style/RateButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rate_save" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cancel_rates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minHeight="52dp"
+                android:text="@string/rate_cancel"
+                android:textColor="#2854C5" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

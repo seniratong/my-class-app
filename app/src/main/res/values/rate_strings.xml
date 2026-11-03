@@ -1,0 +1,39 @@
+<resources>
+    <string name="rate_app_name">汇率换算</string>
+    <string name="rate_edit_title">修改汇率</string>
+    <string name="rate_intro">输入人民币金额，换算美元、欧元和韩元。</string>
+    <string name="rate_amount_label">人民币金额（CNY）</string>
+    <string name="rate_amount_hint">例如：100</string>
+    <string name="rate_convert">开始换算</string>
+    <string name="rate_result_title">换算结果</string>
+    <string name="rate_dollar_result">美元（USD）：%1$s</string>
+    <string name="rate_euro_result">欧元（EUR）：%1$s</string>
+    <string name="rate_won_result">韩元（KRW）：%1$s</string>
+    <string name="rate_empty_result">—</string>
+    <string name="rate_current_title">当前汇率 · 1 元人民币可兑换</string>
+    <string name="rate_current_values">美元 %1$s　/　欧元 %2$s　/　韩元 %3$s</string>
+    <string name="rate_example_note">网络来源：我查网 chl.cn 今日汇率（现汇卖出价）。报价为每 100 外币对应人民币，换算采用 100 ÷ 报价，仅供课堂参考。</string>
+    <string name="rate_edit_note">汇率表示 1 元人民币可兑换的外币金额。保存后返回换算页，使用新汇率重新计算。</string>
+    <string name="rate_dollar_label">美元汇率（USD / CNY）</string>
+    <string name="rate_euro_label">欧元汇率（EUR / CNY）</string>
+    <string name="rate_won_label">韩元汇率（KRW / CNY）</string>
+    <string name="rate_input_hint">请输入大于 0 的汇率</string>
+    <string name="rate_save">保存并返回</string>
+    <string name="rate_cancel">取消</string>
+    <string name="rate_invalid">请输入有效且大于 0 的汇率</string>
+    <string name="rate_amount_invalid">请输入有效且不小于 0 的人民币金额</string>
+    <style name="RateButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/bg_rate_button</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <string name="rate_fetch">获取网络汇率</string>
+    <string name="rate_fetch_loading">正在从我查网获取…</string>
+    <string name="rate_fetch_idle">尚未获取网络数据，当前使用本地汇率。</string>
+    <string name="rate_fetch_success">来源：我查网 chl.cn · 现汇卖出价\n获取时间：%1$s</string>
+    <string name="rate_fetch_error">获取失败，已保留原汇率。请检查网络后重试。</string>
+    <string name="rate_manual">当前使用手动设置的汇率。</string>
+</resources>

@@ -29,9 +29,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    testOptions {
+        // Prevent rotation/transition overlays from intercepting Espresso taps.
+        animationsDisabled = true
+    }
 }
 
 dependencies {
+    implementation(libs.jsoup)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
