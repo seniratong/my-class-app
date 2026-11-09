@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rate_list_root"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#FFFFFF">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical" android:padding="8dp">
+        <Button android:id="@+id/rate_list_back" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="@string/rate_list_back" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="@string/rate_list_title" android:textSize="22sp"
+            android:textStyle="bold" android:textColor="#172B4D" android:gravity="center" />
+        <Button android:id="@+id/rate_list_refresh" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="@string/rate_list_refresh" />
+    </LinearLayout>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:padding="16dp" android:text="@string/rate_list_units" android:textSize="16sp" android:textColor="#172B4D" />
+    <TextView android:id="@+id/rate_list_status" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:paddingHorizontal="16dp" android:paddingBottom="12dp"
+        android:accessibilityLiveRegion="polite" android:textSize="14sp" android:textColor="#46536B" />
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <ListView android:id="@android:id/list" android:layout_width="match_parent"
+            android:layout_height="match_parent" android:divider="#DFE4EB" android:dividerHeight="1dp" />
+        <TextView android:id="@android:id/empty" android:layout_width="match_parent"
+            android:layout_height="match_parent" android:gravity="center" android:padding="24dp"
+            android:text="@string/rate_list_empty" android:textSize="16sp" />
+    </FrameLayout>
+</LinearLayout>

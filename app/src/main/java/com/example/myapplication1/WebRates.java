@@ -4,16 +4,21 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /** Quotes on the source page are CNY per 100 foreign currency units. */
 final class WebRates {
     static final String URL = "https://chl.cn/huilv/?jinri";
     final float dollar, euro, won;
+    final List<String> rows;
 
-    private WebRates(float dollar, float euro, float won) {
+    private WebRates(float dollar, float euro, float won, List<String> rows) {
         this.dollar = dollar;
         this.euro = euro;
         this.won = won;
+        this.rows = Collections.unmodifiableList(new ArrayList<>(rows));
     }
 
     static WebRates fetch() throws IOException {
@@ -25,6 +30,7 @@ final class WebRates {
         for (Element table : Jsoup.parse(html).select("table")) {
             int nameColumn = -1, priceColumn = -1;
             float dollar = 0, euro = 0, won = 0;
+            List<String> rows = new ArrayList<>();
             for (Element row : table.select("tr")) {
                 Elements cells = row.select("> th, > td");
                 for (int i = 0; i < cells.size(); i++) {
@@ -35,21 +41,25 @@ final class WebRates {
                 if (nameColumn < 0 || priceColumn < 0
                         || cells.size() <= Math.max(nameColumn, priceColumn)) continue;
                 String name = cells.get(nameColumn).text().trim();
-                if (!"美元".equals(name) && !"欧元".equals(name) && !"韩国元".equals(name)) continue;
+                if (name.isEmpty() || "货币名称".equals(name)) continue;
+                boolean required = "美元".equals(name) || "欧元".equals(name) || "韩国元".equals(name);
+                String price = cells.get(priceColumn).text().trim();
                 float rate;
                 try {
-                    float quote = Float.parseFloat(cells.get(priceColumn).text().trim());
+                    float quote = Float.parseFloat(price);
                     rate = 100f / quote;
                     if (!Float.isFinite(quote) || quote <= 0 || !Float.isFinite(rate) || rate <= 0)
                         throw new NumberFormatException("Invalid quote");
                 } catch (NumberFormatException invalid) {
-                    throw new IOException("网页报价无效", invalid);
+                    if (required) throw new IOException("网页报价无效", invalid);
+                    continue;
                 }
+                rows.add(name + " => " + price);
                 if ("美元".equals(name)) dollar = rate;
                 if ("欧元".equals(name)) euro = rate;
                 if ("韩国元".equals(name)) won = rate;
             }
-            if (dollar > 0 && euro > 0 && won > 0) return new WebRates(dollar, euro, won);
+            if (dollar > 0 && euro > 0 && won > 0) return new WebRates(dollar, euro, won, rows);
         }
         throw new IOException("网页缺少美元、欧元、韩元或现汇卖出价列");
     }

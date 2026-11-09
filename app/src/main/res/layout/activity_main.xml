@@ -7,18 +7,13 @@
     android:background="@color/court_background"
     android:orientation="vertical"
     tools:context=".MainActivity">
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:text="@string/court_title"
-        android:textColor="@color/court_text"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:accessibilityHeading="true" />
+        app:title="@string/court_title"
+        app:titleTextColor="@color/court_text" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -92,6 +87,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/court_divider"
                     android:importantForAccessibility="no" />
+
                 <LinearLayout
                     android:id="@+id/team_b_panel"
                     android:layout_width="0dp"
@@ -102,13 +98,15 @@
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp"
                     android:paddingBottom="8dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
                         android:text="@string/team_b"
                         android:textColor="@color/court_muted"
-                        android:textSize="18sp"
-                        android:accessibilityHeading="true" />
+                        android:textSize="18sp" />
+
                     <TextView
                         android:id="@+id/score_b"
                         android:layout_width="match_parent"
@@ -120,6 +118,7 @@
                         android:text="@string/score_zero"
                         android:textColor="@color/court_text"
                         android:textSize="64sp" />
+
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/add_three_b"
                         style="@style/CourtButton"
@@ -127,6 +126,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="@string/add_three_points" />
+
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/add_two_b"
                         style="@style/CourtButton"
@@ -134,6 +134,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/add_two_points" />
+
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/free_throw_b"
                         style="@style/CourtButton"

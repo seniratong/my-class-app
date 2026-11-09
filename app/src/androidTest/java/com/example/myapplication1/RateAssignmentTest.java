@@ -34,11 +34,20 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class RateAssignmentTest {
-    @Before
     @After
     public void clearExampleRates() {
         InstrumentationRegistry.getInstrumentation().getTargetContext()
                 .getSharedPreferences(RateActivity.PREFERENCES, 0).edit().clear().commit();
+    }
+
+    @Before public void seedTodayDefaults() {
+        clearExampleRates();
+        // These interaction tests use local defaults; network behavior is tested separately.
+        InstrumentationRegistry.getInstrumentation().getTargetContext()
+                .getSharedPreferences(RateActivity.PREFERENCES, 0).edit()
+                .putFloat(RateActivity.KEY_DOLLAR, 0.14f).putFloat(RateActivity.KEY_EURO, 0.13f)
+                .putFloat(RateActivity.KEY_WON, 190f).putString(RateCache.KEY_DATE, RateCache.today())
+                .putString(RateCache.KEY_ROWS, "美元 => 714.2857\n欧元 => 769.2308\n韩国元 => 0.526316").commit();
     }
 
     private void enter(int id, String text) {

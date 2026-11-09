@@ -1,4 +1,16 @@
 <resources>
+    <string name="rate_database_title">查看 MySQL 数据库</string>
+    <string name="rate_database_saved">已保存至 MySQL 数据库</string>
+    <string name="rate_database_failed">汇率已缓存；MySQL 保存失败，请启动本机数据库接口后点击刷新重试。</string>
+    <string name="rate_database_browser_missing">未找到浏览器，请在电脑打开数据库查询页面。</string>
+    <string name="rate_list_title">汇率列表</string>
+    <string name="rate_list_back">返回</string>
+    <string name="rate_list_refresh">刷新</string>
+    <string name="rate_list_units">现汇卖出价 · 每 100 外币对应人民币（元）</string>
+    <string name="rate_list_cached">缓存日期：%1$s · 当天已更新，直接使用缓存</string>
+    <string name="rate_list_empty">暂无网络汇率，请点击刷新获取。</string>
+    <string name="rate_list_failed_empty">获取失败，暂无缓存。请检查网络后点击刷新重试。</string>
+    <string name="rate_list_failed_cached">获取失败，保留 %1$s 的缓存。可点击刷新重试。</string>
     <string name="rate_app_name">汇率换算</string>
     <string name="rate_edit_title">修改汇率</string>
     <string name="rate_intro">输入人民币金额，换算美元、欧元和韩元。</string>

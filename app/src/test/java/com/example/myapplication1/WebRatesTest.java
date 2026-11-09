@@ -4,6 +4,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class WebRatesTest {
+    @Test public void includesOtherCurrenciesInSourceOrderWithOriginalQuoteUnits() throws Exception {
+        WebRates rates = WebRates.parse(html("700", "800", "0.5").replace("</table>",
+                row("英镑", "900") + row("无报价币种", "--") + "</table>"));
+        assertEquals(java.util.Arrays.asList("韩国元 => 0.5", "欧元 => 800", "美元 => 700", "英镑 => 900"), rates.rows);
+    }
+
     private String row(String name, String price) {
         return "<tr><td>" + name + "</td><td>1</td><td>" + price + "</td></tr>";
     }

@@ -9,4 +9,12 @@
     <string name="free_throw">FREE THROW</string>
     <string name="reset_scores">RESET</string>
     <string name="team_score">%1$s：%2$d 分</string>
+    <string name="score_settings">设置分数</string>
+    <string name="score_settings_hint">修改两队当前分数，保存后返回计数器。</string>
+    <string name="edit_team_a_score">Team A 分数</string>
+    <string name="edit_team_b_score">Team B 分数</string>
+    <string name="score_input_hint">请输入非负整数</string>
+    <string name="save_scores">保存</string>
+    <string name="cancel_scores">取消</string>
+    <string name="invalid_score">请输入 0～2147483647 的整数</string>
 </resources>

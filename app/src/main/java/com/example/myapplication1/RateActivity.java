@@ -7,9 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -87,6 +84,17 @@ public class RateActivity extends RateScreenActivity {
             @Override public void afterTextChanged(Editable s) { }
         });
         calculate(false);
+        if (RateCache.needsUpdate(preferences)) fetchRates();
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (preferences != null && !loading) {
+            readRates(null);
+            showRates();
+            showSource();
+            calculate(false);
+        }
     }
 
     private void showSource() {
@@ -109,15 +117,13 @@ public class RateActivity extends RateScreenActivity {
         fetchThread = new Thread(() -> {
             try {
                 WebRates rates = WebRates.fetch();
+                boolean databaseSynced = RateDatabaseClient.save(rates);
                 mainHandler.post(() -> {
                     if (destroyed) return;
                     dollarRate = rates.dollar;
                     euroRate = rates.euro;
                     wonRate = rates.won;
-                    String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date());
-                    preferences.edit().putFloat(KEY_DOLLAR, dollarRate)
-                            .putFloat(KEY_EURO, euroRate).putFloat(KEY_WON, wonRate)
-                            .putString(KEY_SOURCE, getString(R.string.rate_fetch_success, time)).apply();
+                    RateCache.save(this, rates, databaseSynced);
                     showRates();
                     showSource();
                     calculate(false);
@@ -138,6 +144,7 @@ public class RateActivity extends RateScreenActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_edit_rates).setEnabled(!loading);
+        menu.findItem(R.id.menu_rate_list).setEnabled(!loading);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -223,6 +230,18 @@ public class RateActivity extends RateScreenActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_rate_database) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(RateDatabaseClient.BASE_URL + "/database")));
+            } catch (android.content.ActivityNotFoundException missingBrowser) {
+                android.widget.Toast.makeText(this, R.string.rate_database_browser_missing, android.widget.Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_rate_list) {
+            if (!loading) startActivity(new Intent(this, RateListActivity.class));
+            return true;
+        }
         if (item.getItemId() == R.id.menu_edit_rates) {
             if (!loading) openRateSettings();
             return true;

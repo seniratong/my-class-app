@@ -14,3 +14,5 @@
 .cxx
 local.properties
 /assignment-output/
+__pycache__/
+*.pyc

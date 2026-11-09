@@ -12,7 +12,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/rate_network_security"
         android:theme="@style/Theme.MyApplication1">
+        <activity android:name=".RateListActivity" android:exported="false"
+            android:label="@string/rate_list_title" />
         <activity
             android:name=".RateSettingsActivity"
             android:exported="false"
@@ -30,6 +33,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ScoreSettingsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

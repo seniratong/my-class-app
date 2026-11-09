@@ -1,9 +1,14 @@
 package com.example.myapplication1;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,12 +22,32 @@ public class MainActivity extends AppCompatActivity {
     private int scoreB;
     private TextView scoreAView;
     private TextView scoreBView;
+    private ScoreStore scoreStore;
+    private final ActivityResultLauncher<Intent> scoreSettingsLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                Intent data = result.getData();
+                if (result.getResultCode() != RESULT_OK || data == null
+                        || !data.hasExtra(ScoreStore.KEY_TEAM_A)
+                        || !data.hasExtra(ScoreStore.KEY_TEAM_B)) {
+                    return;
+                }
+                int updatedA = data.getIntExtra(ScoreStore.KEY_TEAM_A, -1);
+                int updatedB = data.getIntExtra(ScoreStore.KEY_TEAM_B, -1);
+                if (updatedA < 0 || updatedB < 0) {
+                    return;
+                }
+                scoreA = updatedA;
+                scoreB = updatedB;
+                saveAndShowScores();
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
+        setSupportActionBar(findViewById(R.id.title));
+        scoreStore = new ScoreStore(this);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
                 .setAppearanceLightStatusBars(true);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
@@ -40,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             scoreA = savedInstanceState.getInt(STATE_TEAM_A, 0);
             scoreB = savedInstanceState.getInt(STATE_TEAM_B, 0);
+        } else {
+            scoreA = scoreStore.getTeamA();
+            scoreB = scoreStore.getTeamB();
         }
         showScores();
 
@@ -52,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.reset_button).setOnClickListener(view -> {
             scoreA = 0;
             scoreB = 0;
-            showScores();
+            saveAndShowScores();
         });
     }
 
@@ -62,7 +90,32 @@ public class MainActivity extends AppCompatActivity {
         } else if (!teamA && scoreB <= Integer.MAX_VALUE - points) {
             scoreB += points;
         }
+        saveAndShowScores();
+    }
+
+    private void saveAndShowScores() {
+        scoreStore.save(scoreA, scoreB);
         showScores();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.scoreboard, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_set) {
+            Intent intent = new Intent(this, ScoreSettingsActivity.class);
+            Bundle scores = new Bundle();
+            scores.putInt(ScoreStore.KEY_TEAM_A, scoreA);
+            scores.putInt(ScoreStore.KEY_TEAM_B, scoreB);
+            intent.putExtras(scores);
+            scoreSettingsLauncher.launch(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showScores() {
@@ -70,6 +123,14 @@ public class MainActivity extends AppCompatActivity {
         scoreBView.setText(String.valueOf(scoreB));
         scoreAView.setContentDescription(getString(R.string.team_score, getString(R.string.team_a), scoreA));
         scoreBView.setContentDescription(getString(R.string.team_score, getString(R.string.team_b), scoreB));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        scoreA = savedInstanceState.getInt(STATE_TEAM_A, 0);
+        scoreB = savedInstanceState.getInt(STATE_TEAM_B, 0);
+        showScores();
     }
 
     @Override
