@@ -16,6 +16,8 @@
         android:theme="@style/Theme.MyApplication1">
         <activity android:name=".RateListActivity" android:exported="false"
             android:label="@string/rate_list_title" />
+        <activity android:name=".RateDetailActivity" android:exported="false"
+            android:label="@string/rate_app_name" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".RateSettingsActivity"
             android:exported="false"

@@ -37,13 +37,35 @@ public class RateListTest {
         try (ActivityScenario<RateListActivity> scenario = ActivityScenario.launch(RateListActivity.class)) {
             scenario.onActivity(activity -> {
                 assertEquals(4, activity.getListAdapter().getCount());
-                assertEquals("美元 => 700", activity.getListAdapter().getItem(0));
+                assertEquals("美元", ((java.util.Map<?, ?>) activity.getListAdapter().getItem(0)).get("currency"));
                 assertTrue(activity.findViewById(R.id.rate_list_refresh).isEnabled());
                 assertTrue(((TextView) activity.findViewById(R.id.rate_list_status)).getText().toString().contains("缓存"));
             });
             scenario.recreate();
             scenario.onActivity(activity -> assertEquals(4, activity.getListAdapter().getCount()));
         }
+    }
+
+    @Test public void selectingPoundConvertsUsingItsOwnQuote() throws Exception {
+        RateCache.save(context, WebRates.parse(html));
+        try (ActivityScenario<RateListActivity> scenario = ActivityScenario.launch(RateListActivity.class)) {
+            convertSelectedCurrency("英镑", "100", "11.11");
+        }
+    }
+
+    private void convertSelectedCurrency(String currency, String amount, String expected) {
+        androidx.test.espresso.Espresso.onData(org.hamcrest.Matchers.hasEntry("currency", currency))
+                .inAdapterView(androidx.test.espresso.matcher.ViewMatchers.withId(android.R.id.list))
+                .perform(androidx.test.espresso.action.ViewActions.click());
+        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(R.id.rate_detail_amount))
+                .perform(androidx.test.espresso.action.ViewActions.replaceText(amount),
+                        androidx.test.espresso.action.ViewActions.closeSoftKeyboard());
+        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(R.id.rate_detail_convert))
+                .perform(androidx.test.espresso.action.ViewActions.click());
+        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(R.id.rate_detail_result))
+                .check(androidx.test.espresso.assertion.ViewAssertions.matches(
+                        androidx.test.espresso.matcher.ViewMatchers.withText(context.getString(
+                                R.string.rate_detail_result, expected, currency))));
     }
 
     @Test public void converterUsesTodayCacheAndListEntryReturns() throws Exception {
@@ -74,6 +96,13 @@ public class RateListTest {
                 assertTrue(((TextView) activity.findViewById(R.id.rate_list_status)).getText().toString().contains("获取时间"));
             });
             capture("01-network-list.png");
+            String quote = RateCache.rows(prefs).stream()
+                    .filter(row -> row.startsWith("欧元 => ")).findFirst().orElseThrow().substring("欧元 => ".length());
+            String expected = new java.math.BigDecimal("10000").divide(new java.math.BigDecimal(quote),
+                    2, java.math.RoundingMode.HALF_UP).toPlainString();
+            convertSelectedCurrency("欧元", "100", expected);
+            capture("05-conversion-result.png");
+            androidx.test.espresso.Espresso.pressBack();
             scenario.recreate();
             scenario.onActivity(activity -> assertTrue(((TextView) activity.findViewById(R.id.rate_list_status))
                     .getText().toString().contains("缓存")));

@@ -1,25 +1,31 @@
 package com.example.myapplication1;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-/** Course exercise: worker Runnable -> main-thread Handler -> ArrayAdapter. */
+/** Fetches network quotes and binds them to custom, selectable list rows. */
 public class RateListActivity extends ListActivity implements Runnable {
     private static final int SUCCESS = 5;
     private static final int FAILURE = 6;
-    private ArrayAdapter<String> adapter;
+    private static final String CURRENCY = "currency";
+    private static final String QUOTE = "quote";
+    private final List<Map<String, String>> items = new ArrayList<>();
+    private SimpleAdapter adapter;
     private SharedPreferences preferences;
     private TextView status;
     private Thread worker;
@@ -39,17 +45,35 @@ public class RateListActivity extends ListActivity implements Runnable {
         ViewCompat.requestApplyInsets(findViewById(R.id.rate_list_root));
         preferences = getSharedPreferences(RateActivity.PREFERENCES, MODE_PRIVATE);
         status = findViewById(R.id.rate_list_status);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
+        adapter = new SimpleAdapter(this, items, R.layout.rate_list_item,
+                new String[]{CURRENCY, QUOTE}, new int[]{R.id.rate_row_currency, R.id.rate_row_quote});
         setListAdapter(adapter);
+        getListView().setOnItemClickListener((parent, view, position, id) -> openConverter(position));
         showCache();
         findViewById(R.id.rate_list_back).setOnClickListener(view -> finish());
         findViewById(R.id.rate_list_refresh).setOnClickListener(view -> refresh());
         if (RateCache.needsUpdate(preferences)) refresh();
     }
 
+    private void openConverter(int position) {
+        Map<String, String> item = items.get(position);
+        Intent intent = new Intent(this, RateDetailActivity.class);
+        intent.putExtra(RateDetailActivity.EXTRA_CURRENCY, item.get(CURRENCY));
+        intent.putExtra(RateDetailActivity.EXTRA_QUOTE, item.get(QUOTE));
+        startActivity(intent);
+    }
+
+    private void showRows(List<String> rows) {
+        items.clear();
+        for (String row : rows) {
+            String[] fields = row.split(" => ", 2);
+            if (fields.length == 2) items.add(Map.of(CURRENCY, fields[0], QUOTE, fields[1]));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     private void showCache() {
-        adapter.clear();
-        adapter.addAll(RateCache.rows(preferences));
+        showRows(RateCache.rows(preferences));
         status.setText(adapter.isEmpty() ? getString(R.string.rate_list_empty)
                 : getString(R.string.rate_list_cached, preferences.getString(RateCache.KEY_DATE, "")));
     }
@@ -79,8 +103,7 @@ public class RateListActivity extends ListActivity implements Runnable {
         if (message.what == SUCCESS) {
             WebRates rates = (WebRates) message.obj;
             RateCache.save(this, rates, databaseSynced);
-            adapter.clear();
-            adapter.addAll(rates.rows);
+            showRows(rates.rows);
             status.setText(preferences.getString(RateCache.KEY_SOURCE, ""));
         } else if (message.what == FAILURE) {
             status.setText(adapter.isEmpty() ? getString(R.string.rate_list_failed_empty)
